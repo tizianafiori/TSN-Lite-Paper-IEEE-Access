@@ -76,13 +76,6 @@ def calcReqSlot(linkLen,messLength,paths2,slotDuration,bitRate,swType):
                 maxDelay.append(currentDelay[s])
 
 
-
-        #print(maxDelay)
-        #print(np.array(maxDelay))
-        #print(slotDuration)
-        #print(currentLinks)
-        #print(np.array(maxDelay)/slotDuration)
-        #print(np.ceil((np.array(maxDelay) / slotDuration)))
             currentLinksIndx =  [item -1 for item in currentLinks]
             reqSlotTSN[currentLinksIndx, m] = np.ceil((np.array(maxDelay) / slotDuration))
 
