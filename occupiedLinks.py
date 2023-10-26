@@ -6,16 +6,10 @@ def occupiedLinks(paths,paths_constr,broadcastPath,flightPhase):
 
     link = []
     link_2 = []
-    #pathsArray = np.array(paths)
-    #for h in range(len(pathsArray)*10):
-        #pathsArray = np.hstack(pathsArray)
-        #print(pathsArray)
+
     if flightPhase == 3:
         pathsArray = np.array([3, 2, 3, 2, 5, 4, 1, 4, 3, 2, 3, 6, 3, 2, 3, 2, 3, 2])
-    elif flightPhase == 2:
-        pathsArray = np.array([3, 2, 3, 9, 12,3, 9, 12,5, 4,1, 4,11, 10, 4,3, 2, 3, 6,3, 6, 0, 3, 9, 12,3, 2,3, 2,3, 2,3, 9, 12,3, 9, 12,3, 9, 12])
-    else:
-        pathsArray = np.array([3, 2,3, 9, 12,3, 9, 15, 18,3, 9, 15, 18,5, 4,1, 4,11, 10, 4,17, 16, 10, 4,3, 2,3,6,3, 9, 12,3, 6, 0,3, 9, 15, 18,3, 6, 0, 0,3, 2,3, 2,3, 2,3, 9, 12,3, 9, 12,3, 9, 12,3, 9, 15, 18,3, 9, 15, 18,3, 9, 15, 18])
+    
     col = pathsArray.max()
     print(col)
     linkBinary = np.zeros((len(paths), col))
