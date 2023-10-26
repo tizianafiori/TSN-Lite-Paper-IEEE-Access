@@ -17,12 +17,10 @@ from occupiedLinks import *
 bitrate = 100 #Mbps
 slotDuration = 1 #microsec
 swType = 1
-flightPhase = 1
+flightPhase = 3
 
 
 T,o,d,Nm,Nl,Nec,gamma,reqSlotTSN,reqSlot_delay_medium,link,broadcastLink,linkBinary,paths,broadcastPath,availab_queue,linkBinary_Constr = loadTrafficData(flightPhase,slotDuration,bitrate,swType)
-
-print(linkBinary_Constr)
 
 flightPhases = np.array([1,2,3])
 makespan = np.zeros((len(flightPhases),Nec))
@@ -88,19 +86,6 @@ for i in range(Nm):
         pathsFinal.append(pathsReconstr)
         index_broadcast.append(i)
         value_ind.append(ind)
-
-print(pathsFinal)
-print(index_broadcast)
-print(value_ind)
-
-
-
-
-
-
-
-
-
 
 from docplex.mp.model import Model
 
@@ -242,88 +227,8 @@ for i in Nm_ran:
                                             scheduling_model.add_constraint(scheduling_model.logical_or((f[k,link_path_const_k[g] - 1] + (o[k] - 1 + b *T[k]) * macro_tick + delta_sync <=f[i,link_path_const_i[h - 1] - 1] + ((o[i] - 1 + a *T[i]) * macro_tick) +reqSlot_delay_medium[link_path_const_i[h - 1] - 1]),(f[i,link_path_const_i[h] - 1] + ((o[i] - 1 + a *T[i]) * macro_tick) + delta_sync  <= f[k,link_path_const_k[g - 1] - 1] + ((o[k] - 1 + b *T[k]) * macro_tick) +reqSlot_delay_medium[link_path_const_k[g - 1] - 1]),q[k,link_path_const_i[h] - 1] != q[i,link_path_const_i[h] - 1]))
                                         g = g + 1
                                 h = h + 1
-#Constraint for different priorities
-"""
-for i in Nm_ran:
-    for k in Nm_ran:
-        for l in Nl_ran:
-            if stream_Prio[i] > stream_Prio[k]:
-                scheduling_model.add_constraint(f[i,l] <= f[k,l])
-                """
-
-
-
-
 
 scheduling_model.minimize(scheduling_model.sum(f[i,j] for i in Nm_ran for j in Nl_ran))
 scheduling_model.print_information()
 scheduling_model.solve()
 scheduling_model.print_solution()
-
-makespan_link = np.zeros((Nl,1))
-
-
-
-F = np.zeros((Nm,Nl))
-count1 = 0
-count2 = 0
-
-count_f = 0
-for f in scheduling_model.iter_integer_vars():
-        if count2 == int(Nl):
-            count2 = 0
-            count1 = count1 +1
-
-        F[count1,count2] = f
-        count2 = count2 + 1
-        count_f = count_f +1
-        if count_f == Nl*Nm:
-            break
-
-
-print(F)
-
-F_true = np.zeros((Nm,Nl))
-for i in Nm_ran:
-    for j in Nl_ran:
-        F_true[i,j] = linkBinary[i,j]*int(F[i,j])-linkBinary[i,j]*(o[i]-1)*macro_tick
-
-print(F_true)
-
-print("linkBinaryConstr",linkBinary_Constr)
-
-print(Delta)
-
-makespan_ec = np.zeros((1,Nec))
-
-for j in Nec_ran:
-    for i in Nm_ran:
-        if Delta[i,j] != 0:
-            makespan_ec[0,j] = max(max(F_true[i][:]),makespan_ec[0,j])
-
-
-print(v)
-print(makespan_ec)
-
-if flightPhase == 3:
-    F.tofile('f_fase3_v2.csv', sep = ',')
-    F_true.tofile('Ffase3_v2.csv', sep=',')
-    makespan_ec.tofile("makespan_3_v2.csv", sep=',')
-    np.array(f).tofile('var_fase3_v2.csv', sep = ',')
-    linkBinary.tofile("linkBinary3.csv",sep = ',')
-    Delta.tofile("Delta_3.csv",sep = ',')
-elif flightPhase == 2:
-    F.tofile('f_fase2_v2.csv', sep=',')
-    F_true.tofile('Ffase2_v2.csv', sep=',')
-    makespan_ec.tofile("makespan_2_v2.csv", sep=',')
-    np.array(f).tofile('var_fase2_v2.csv', sep=',')
-    linkBinary.tofile("linkBinary2.csv", sep=',')
-    Delta.tofile("Delta_2.csv", sep=',')
-elif flightPhase == 1:
-    F.tofile('f_fase1_v2.csv', sep=',')
-    F_true.tofile('Ffase1_v2.csv', sep=',')
-    makespan_ec.tofile("makespan_1_v2.csv", sep=',')
-    np.array(f).tofile('var_fase1_v2.csv', sep=',')
-    linkBinary.tofile("linkBinary1.csv", sep=',')
-    Delta.tofile("Delta_1.csv", sep=',')
-
