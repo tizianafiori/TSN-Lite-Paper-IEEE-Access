@@ -8,7 +8,7 @@ def occupiedLinks(paths,paths_constr,broadcastPath,flightPhase):
     link_2 = []
 
     if flightPhase == 3:
-        pathsArray = np.array([3, 2, 3, 2, 5, 4, 1, 4, 3, 2, 3, 6, 3, 2, 3, 2, 3, 2])
+        pathsArray = np.array(paths)
     
     col = pathsArray.max()
     print(col)
